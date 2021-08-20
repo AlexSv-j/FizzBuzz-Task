@@ -17,22 +17,28 @@ public class FizzBuzzDetector {
 
     /**
      * Entry point to the application
+     *
      * @param args string array, input param of application
      */
     public static void main(String[] args) {
-        System.out.println(new FizzBuzzDetector().getOverlappings(String.join(" ", args)));
+        StringBuilder stringBuilder = new StringBuilder(String.join(" ", args));
+        System.out.println(new FizzBuzzDetector().getOverlappings(stringBuilder));
+
     }
 
     /**
      * Replace every third word in the letter to Fizz and every fifth letter in the word to Buzz.
-     * @param letter string value, letter's length should be in range: 7 ≤ |letter| ≤ 100 and contain only lowercase letters from the range [a-z]
+     *
+     * @param letter StringBuilder value, letter's length should be in range: 7 ≤ |letter| ≤ 100 and contain only lowercase letters from the range [a-z]
      * @return number of coincidences or -1, if letter not satisfy letter's param.
      */
-    public int getOverlappings(String letter) {
+    public int getOverlappings(StringBuilder letter) {
 
         if (letter != null) {
             int length = letter.length();
             int counter = 0;
+            int wordCounter = 0;
+            int symbolStartPositionInWord = 0;
 
             String stringConstrain = "[a-z ]+";
 
@@ -40,26 +46,28 @@ public class FizzBuzzDetector {
             Matcher mather = pattern.matcher(letter);
 
             if (length >= 7 && length <= 100 && mather.matches()) {
-                String[] words = letter.split(" ");
-
-                for (int i = 1; i <= words.length; i++) {
-                    if (i % 3 == 0) {
-                        words[i - 1] = "Fizz";
-                        counter++;
-                    } else {
-                        String tmp = words[i - 1];
-                        int charCounter = 0;
-                        for (int y = 1; y <= tmp.length(); y++) {
-                            if (y % 5 == 0) {
-                                words[i - 1] = words[i - 1].substring(0, y - 1 + charCounter) + "Buzz" + tmp.substring(y);
-                                counter++;
-                                charCounter += 3;
+                for (int i = 0; i < letter.length(); i++) {
+                    if (letter.charAt(i) == ' ' || i + 1 == letter.length()) {
+                        wordCounter++;
+                        if (wordCounter % 3 == 0) {
+                            letter.replace(symbolStartPositionInWord, i+1, "Fizz");
+                            i = symbolStartPositionInWord = symbolStartPositionInWord + 5;
+                            counter++;
+                            continue;
+                        }else {
+                            int charCounter = 0;
+                            for (int y = symbolStartPositionInWord; y <= i-1; y++) {
+                                if (++charCounter % 5 == 0) {
+                                    letter.replace(y, y+1, "Buzz");
+                                    y+=3;
+                                    i+=3;
+                                    counter++;
+                                }
                             }
                         }
+                        symbolStartPositionInWord = i+1;
                     }
                 }
-                letter = String.join(" ", words);
-
                 return counter;
             }
         }
