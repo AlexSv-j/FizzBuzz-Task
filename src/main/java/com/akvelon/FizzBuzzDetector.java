@@ -5,8 +5,7 @@ import java.util.regex.Pattern;
 
 public class FizzBuzzDetector {
     public static void main(String[] args) {
-        String test = "congratulation";
-        new FizzBuzzDetector().getOverlappings(test);
+        System.out.println(new FizzBuzzDetector().getOverlappings(String.join(" ", args)));
     }
 
     int getOverlappings(String letter) {
